@@ -1,9 +1,9 @@
-import MovieList from "./components/MovieList/MovieList";
+import AppRouter from "./routes/AppRouter";
 
 const App = () => {
     return (
         <>
-            <MovieList />
+            <AppRouter />
         </>
     );
 };

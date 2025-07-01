@@ -1,8 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import styles from "./MovieList.module.css";
 import { useEffect, useState } from "react";
 
-const API_KEY = "d6a55e10143895a1208dad2d0f8761e3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 type Movie = {
     id: number;
@@ -26,12 +27,18 @@ const MovieList = () => {
         );
     }, []);
 
+    const navigate = useNavigate();
+
     return (
         <section className={styles.section}>
             <h2>Listado de Películas</h2>
             <ul className={styles.container}>
                 {movies.map((movie) => (
-                    <li key={movie.id} className={styles.card}>
+                    <li
+                        key={movie.id}
+                        className={styles.card}
+                        onClick={() => navigate(`/movies/${movie.id}`)}
+                    >
                         <div className={styles.text}>
                             <h3>{movie.title}</h3>
                             <p>{movie.release_date}</p>
