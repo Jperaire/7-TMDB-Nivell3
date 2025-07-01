@@ -1,0 +1,53 @@
+import styles from "./MovieList.module.css";
+import { useEffect, useState } from "react";
+
+const API_KEY = "d6a55e10143895a1208dad2d0f8761e3";
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+
+type Movie = {
+    id: number;
+    title: string;
+    release_date: string;
+    backdrop_path: string;
+    vote_average: number;
+};
+
+const MovieList = () => {
+    const [movies, setMovies] = useState<Movie[]>([]);
+
+    useEffect(() => {
+        fetch(
+            `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
+        ).then((res) =>
+            res.json().then((data) => {
+                console.log(data);
+                setMovies(data.results);
+            })
+        );
+    }, []);
+
+    return (
+        <section className={styles.section}>
+            <h2>Listado de Películas</h2>
+            <ul className={styles.container}>
+                {movies.map((movie) => (
+                    <li key={movie.id} className={styles.card}>
+                        <div className={styles.text}>
+                            <h3>{movie.title}</h3>
+                            <p>{movie.release_date}</p>
+                        </div>
+                        <div className={styles.rate}>
+                            <p>{movie.vote_average}</p>
+                        </div>
+                        <img
+                            src={`${IMAGE_BASE_URL}${movie.backdrop_path}`}
+                            alt={`Imagen de ${movie.title}`}
+                        />
+                    </li>
+                ))}
+            </ul>
+        </section>
+    );
+};
+
+export default MovieList;
