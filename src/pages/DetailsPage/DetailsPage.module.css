@@ -1,0 +1,88 @@
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 50px auto;
+    color: #222;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.title {
+    text-align: center;
+}
+
+.tagline {
+    font-style: italic;
+    color: #666;
+    text-align: center;
+}
+
+.poster {
+    max-width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.85);
+    display: block;
+    margin: 20px auto;
+}
+
+.overview {
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.info {
+    font-size: 0.8rem;
+    color: #333;
+}
+
+.info strong {
+    color: #333;
+}
+
+.collectionImage {
+    display: block;
+    margin: 20px auto;
+    max-width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 50px;
+}
+
+.links a {
+    color: #007acc;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+
+.genresContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.genreBubble {
+    background-color: #007acc;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgb(0 122 204 / 0.4);
+    transition: background-color 0.3s ease;
+    cursor: default;
+}
+
+.genreBubble:hover {
+    background-color: #005fa3;
+}
