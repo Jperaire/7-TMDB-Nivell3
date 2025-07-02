@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./MovieList.module.css";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -13,27 +13,36 @@ type Movie = {
     vote_average: number;
 };
 
+const fetchPopularMovies = async (): Promise<Movie[]> => {
+    const res = await fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
+    );
+    const data = await res.json();
+    return data.results;
+};
+
 const MovieList = () => {
-    const [movies, setMovies] = useState<Movie[]>([]);
-
-    useEffect(() => {
-        fetch(
-            `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
-        ).then((res) =>
-            res.json().then((data) => {
-                console.log(data);
-                setMovies(data.results);
-            })
-        );
-    }, []);
-
     const navigate = useNavigate();
+
+    const {
+        data: movies,
+        isLoading,
+        isError,
+        error,
+    } = useQuery<Movie[]>({
+        queryKey: ["movies"],
+        queryFn: fetchPopularMovies,
+    });
+
+    if (isLoading) return <p>Cargando...</p>;
+    if (isError)
+        return <p>Error al cargar pelis: {(error as Error).message}</p>;
 
     return (
         <section className={styles.section}>
             <h2>Listado de Películas</h2>
             <ul className={styles.container}>
-                {movies.map((movie) => (
+                {movies?.map((movie) => (
                     <li
                         key={movie.id}
                         className={styles.card}
