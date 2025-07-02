@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./MovieList.module.css";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchPopularMovies } from "../../api/popularMovies";
 import { IMAGE_BASE_URL } from "../../constants";
 
@@ -16,13 +16,19 @@ const MovieList = () => {
     const navigate = useNavigate();
 
     const {
-        data: movies,
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
         isLoading,
         isError,
         error,
-    } = useQuery<Movie[]>({
+    } = useInfiniteQuery<Movie[], Error>({
         queryKey: ["movies"],
-        queryFn: fetchPopularMovies,
+        queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
+            fetchPopularMovies(pageParam),
+
+        getNextPageParam: (pages) => pages.length + 1,
     });
 
     if (isLoading) return <p>Cargando...</p>;
@@ -33,26 +39,38 @@ const MovieList = () => {
         <section className={styles.section}>
             <h2>Listado de Películas</h2>
             <ul className={styles.container}>
-                {movies?.map((movie) => (
-                    <li
-                        key={movie.id}
-                        className={styles.card}
-                        onClick={() => navigate(`/movies/${movie.id}`)}
-                    >
-                        <div className={styles.text}>
-                            <h3>{movie.title}</h3>
-                            <p>{movie.release_date}</p>
-                        </div>
-                        <div className={styles.rate}>
-                            <p>{movie.vote_average}</p>
-                        </div>
-                        <img
-                            src={`${IMAGE_BASE_URL}${movie.backdrop_path}`}
-                            alt={`Imagen de ${movie.title}`}
-                        />
-                    </li>
-                ))}
+                {data?.pages.map((page) =>
+                    page.map((movie) => (
+                        <li
+                            key={movie.id}
+                            className={styles.card}
+                            onClick={() => navigate(`/movies/${movie.id}`)}
+                        >
+                            <div className={styles.text}>
+                                <h3>{movie.title}</h3>
+                                <p>{movie.release_date}</p>
+                            </div>
+                            <div className={styles.rate}>
+                                <p>{movie.vote_average}</p>
+                            </div>
+                            <img
+                                src={`${IMAGE_BASE_URL}${movie.backdrop_path}`}
+                                alt={`Imagen de ${movie.title}`}
+                            />
+                        </li>
+                    ))
+                )}
             </ul>
+            <button
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+            >
+                {isFetchingNextPage
+                    ? "Cargando más..."
+                    : hasNextPage
+                    ? "Cargar más"
+                    : "No hay más pelis"}
+            </button>
         </section>
     );
 };
