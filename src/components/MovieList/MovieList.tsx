@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./MovieList.module.css";
 import { useQuery } from "@tanstack/react-query";
-
-const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+import { fetchPopularMovies } from "../../api/popularMovies";
+import { IMAGE_BASE_URL } from "../../constants";
 
 type Movie = {
     id: number;
@@ -11,14 +10,6 @@ type Movie = {
     release_date: string;
     backdrop_path: string;
     vote_average: number;
-};
-
-const fetchPopularMovies = async (): Promise<Movie[]> => {
-    const res = await fetch(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
-    );
-    const data = await res.json();
-    return data.results;
 };
 
 const MovieList = () => {

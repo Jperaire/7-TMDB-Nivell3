@@ -1,9 +1,8 @@
-import { useParams } from "react-router-dom";
 import styles from "./DetailsPage.module.css";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { IMAGE_BASE_URL } from "../../constants";
-
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY as string;
+import { fetchDetailsMovie } from "../../api/movieDetails";
 
 interface Genre {
     id: number;
@@ -57,14 +56,6 @@ interface Movie {
     vote_average: number;
     vote_count: number;
 }
-
-const fetchDetailsMovie = async (id: string) => {
-    const res = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
-    );
-    const data = await res.json();
-    return data;
-};
 
 const DetailsPage = () => {
     const { id } = useParams<{ id: string }>();
