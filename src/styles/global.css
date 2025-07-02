@@ -4,7 +4,8 @@ html {
 
 body {
     font-family: var(--primary-font);
-    background-color: #eae8e8;
+    background-color: var(--background-color);
+    color: #fff;
 }
 
 #root {
@@ -42,5 +43,5 @@ h3 {
 p {
     margin-bottom: 0;
     font-size: 0.7rem;
-    color: #555;
+    color: #c6c5c5;
 }

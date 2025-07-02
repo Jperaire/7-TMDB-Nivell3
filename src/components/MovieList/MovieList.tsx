@@ -13,6 +13,13 @@ type Movie = {
     vote_average: number;
 };
 
+type MoviesPage = {
+    page: number;
+    results: Movie[];
+    total_pages: number;
+    total_results: number;
+};
+
 const MovieList = () => {
     const navigate = useNavigate();
 
@@ -24,12 +31,15 @@ const MovieList = () => {
         isLoading,
         isError,
         error,
-    } = useInfiniteQuery<Movie[], Error>({
+    } = useInfiniteQuery<MoviesPage, Error>({
         queryKey: ["movies"],
         queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
             fetchPopularMovies(pageParam),
 
-        getNextPageParam: (pages) => pages.length + 1,
+        getNextPageParam: (lastPage) =>
+            lastPage.page < lastPage.total_pages
+                ? lastPage.page + 1
+                : undefined,
     });
 
     useEffect(() => {
@@ -52,12 +62,13 @@ const MovieList = () => {
     if (isError)
         return <p>Error al cargar pelis: {(error as Error).message}</p>;
 
+    const pages = data?.pages as MoviesPage[] | undefined;
+
     return (
         <section className={styles.section}>
-            <h2>Listado de Películas</h2>
             <ul className={styles.container}>
-                {data?.pages.map((page) =>
-                    page.map((movie) => (
+                {pages?.map((page) =>
+                    page.results.map((movie) => (
                         <li
                             key={movie.id}
                             className={styles.card}
@@ -66,9 +77,6 @@ const MovieList = () => {
                             <div className={styles.text}>
                                 <h3>{movie.title}</h3>
                                 <p>{movie.release_date}</p>
-                            </div>
-                            <div className={styles.rate}>
-                                <p>{movie.vote_average}</p>
                             </div>
                             <img
                                 src={`${IMAGE_BASE_URL}${movie.backdrop_path}`}

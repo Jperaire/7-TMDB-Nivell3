@@ -8,10 +8,17 @@ type Movie = {
     vote_average: number;
 };
 
-export const fetchPopularMovies = async (page: number): Promise<Movie[]> => {
+type MoviesPage = {
+    page: number;
+    results: Movie[];
+    total_pages: number;
+    total_results: number;
+};
+
+export const fetchPopularMovies = async (page: number): Promise<MoviesPage> => {
     const res = await fetch(
         `${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
     );
     const data = await res.json();
-    return data.results;
+    return data;
 };

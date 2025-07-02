@@ -4,9 +4,8 @@
 }
 
 :root {
-    --primary-color: rgb(254, 157, 120);
-    --secondary-color: #51b589;
-    --text-muted: grey;
-    --error-style: rgb(255, 0, 0);
+    --primary-color: #2c3e50;
+    --secondary-color: #2980b9;
+    --background-color: #eae8e8;
     --primary-font: "Montserrat", sans-serif;
 }

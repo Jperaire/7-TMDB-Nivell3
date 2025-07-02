@@ -1,0 +1,50 @@
+.container {
+    border-radius: 20px;
+    margin: 20px;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 45px;
+    box-shadow: 0 0 15px rgba(44, 62, 80, 0.7);
+    background-color: var(--primary-color);
+    padding: 0 2rem;
+    letter-spacing: 0.03em;
+    user-select: none;
+}
+
+.welcomeH1 {
+    font-weight: 900;
+    max-width: 650px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(44, 62, 80, 0.25);
+}
+
+.welcomeP {
+    font-style: italic;
+    color: #c2c5c5;
+    font-weight: 600;
+}
+
+.welcomeBTN {
+    background-color: var(--secondary-color);
+    color: #fff;
+    border: none;
+    padding: 1.1rem 2.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease,
+        transform 0.15s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.welcomeBTN:hover {
+    background-color: #1c5980;
+    box-shadow: 0 0 30px rgba(180, 192, 200, 0.7);
+    transform: scale(1.08);
+}

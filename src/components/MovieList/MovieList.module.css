@@ -13,44 +13,35 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
+    gap: 20px;
 }
 
 .card {
-    display: grid;
-    grid-template-rows: 2fr 1fr 2fr;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
     text-align: center;
     height: 260px;
     width: 200px;
     border-radius: 15px;
     border: 1px solid #aaa;
-    background-color: #fff;
+    background-color: var(--primary-color);
     margin-bottom: 5px;
 }
 
 .card:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.rate {
-    background-color: rgb(250, 237, 220);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.rate p {
-    color: chocolate;
-    font-weight: 600;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
 }
 
 .text {
-    margin: 30px 10px 10px 10px;
+    margin: 40px 10px 0px 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
 }
 
 .card p {
     font-size: 0.6rem;
+    margin-top: 10px;
 }
 
 .card img {
