@@ -3,6 +3,7 @@ import styles from "./MovieList.module.css";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { fetchPopularMovies } from "../../api/popularMovies";
 import { IMAGE_BASE_URL } from "../../constants";
+import { useEffect } from "react";
 
 type Movie = {
     id: number;
@@ -30,6 +31,22 @@ const MovieList = () => {
 
         getNextPageParam: (pages) => pages.length + 1,
     });
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (
+                window.innerHeight + window.scrollY >=
+                    document.body.offsetHeight &&
+                hasNextPage &&
+                !isFetchingNextPage
+            ) {
+                fetchNextPage();
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
     if (isLoading) return <p>Cargando...</p>;
     if (isError)
@@ -61,16 +78,6 @@ const MovieList = () => {
                     ))
                 )}
             </ul>
-            <button
-                onClick={() => fetchNextPage()}
-                disabled={!hasNextPage || isFetchingNextPage}
-            >
-                {isFetchingNextPage
-                    ? "Cargando más..."
-                    : hasNextPage
-                    ? "Cargar más"
-                    : "No hay más pelis"}
-            </button>
         </section>
     );
 };
