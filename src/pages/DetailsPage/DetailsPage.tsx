@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./DetailsPage.module.css";
+import { useQuery } from "@tanstack/react-query";
+import { IMAGE_BASE_URL } from "../../constants";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY as string;
 
@@ -57,24 +58,41 @@ interface Movie {
     vote_count: number;
 }
 
+const fetchDetailsMovie = async (id: string) => {
+    const res = await fetch(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
+    );
+    const data = await res.json();
+    return data;
+};
+
 const DetailsPage = () => {
     const { id } = useParams<{ id: string }>();
-    const [movie, setMovie] = useState<Movie | null>(null);
-    const imageBase = "https://image.tmdb.org/t/p/w500";
 
-    useEffect(() => {
-        if (!id) return;
+    const {
+        data: movie,
+        isLoading,
+        isError,
+        error,
+    } = useQuery<Movie>({
+        queryKey: ["movie", id],
+        queryFn: () => fetchDetailsMovie(id!),
+    });
 
-        fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`)
-            .then((res) => res.json())
-            .then((data: Movie) => setMovie(data))
-            .catch((error) => {
-                console.error("Error fetching movie:", error);
-            });
-    }, [id]);
+    if (isLoading) {
+        return <p className={styles.container}>Cargando detalles...</p>;
+    }
+
+    if (isError) {
+        return (
+            <p className={styles.container}>
+                Error: {(error as Error).message}
+            </p>
+        );
+    }
 
     if (!movie) {
-        return <p className={styles.container}>Cargando detalles...</p>;
+        return <p className={styles.container}>No se encontró la película.</p>;
     }
 
     return (
@@ -86,7 +104,7 @@ const DetailsPage = () => {
             {movie.poster_path && (
                 <img
                     className={styles.poster}
-                    src={imageBase + movie.poster_path}
+                    src={IMAGE_BASE_URL + movie.poster_path}
                     alt={movie.title}
                 />
             )}
@@ -146,7 +164,8 @@ const DetailsPage = () => {
                     <br />
                     <img
                         src={
-                            imageBase + movie.belongs_to_collection.poster_path
+                            IMAGE_BASE_URL +
+                            movie.belongs_to_collection.poster_path
                         }
                         alt={movie.belongs_to_collection.name}
                         className={styles.collectionImage}
