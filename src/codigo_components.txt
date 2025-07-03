@@ -31,40 +31,60 @@ import "./global.css";
 import "./reset.css";
 import "./utilities.css";
 import "./variables.css";
-import { Outlet, NavLink } from "react-router-dom";
-import styles from "./Layout.module.css";
+import styles from "./Navbar.module.css";
+import { NavLink } from "react-router-dom";
+
+const Navbar = () => {
+    return (
+        <nav className={styles.navbar}>
+            <ul className={styles.navList}>
+                <li>
+                    <NavLink
+                        to="/"
+                        className={({ isActive }) =>
+                            isActive ? styles.active : ""
+                        }
+                    >
+                        Inicio
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink
+                        to="/movies"
+                        className={({ isActive }) =>
+                            isActive ? styles.active : ""
+                        }
+                    >
+                        Películas
+                    </NavLink>
+                </li>
+            </ul>
+        </nav>
+    );
+};
+
+export default Navbar;
+import styles from "./Footer.module.css";
+
+export const Footer = () => {
+    return (
+        <footer className={styles.footer}>
+            © {new Date().getFullYear()} TMDB. Todos los derechos reservados.
+        </footer>
+    );
+};
+import { Outlet } from "react-router-dom";
+import Navbar from "../Navbar/Navbar";
+import { Footer } from "../Footer/Footer";
 
 const Layout = () => {
     return (
         <>
-            <nav className={styles.navbar}>
-                <ul className={styles.navList}>
-                    <li>
-                        <NavLink
-                            to="/"
-                            className={({ isActive }) =>
-                                isActive ? styles.active : ""
-                            }
-                        >
-                            Inicio
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            to="/movies"
-                            className={({ isActive }) =>
-                                isActive ? styles.active : ""
-                            }
-                        >
-                            Películas
-                        </NavLink>
-                    </li>
-                </ul>
-            </nav>
-
-            <main className={styles.mainContent}>
+            <Navbar />
+            <main>
                 <Outlet />
             </main>
+            <Footer />
         </>
     );
 };
