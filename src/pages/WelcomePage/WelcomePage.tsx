@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./WelcomePage.module.css";
+import StyledButton from "../../components/Button/StyledButton";
 
 const WelcomePage = () => {
     const navigate = useNavigate();
@@ -10,12 +11,9 @@ const WelcomePage = () => {
                 Películas y series sin límites y mucho más
             </h1>
             <p className={styles.welcomeP}>¿Quieres ver algo ya? </p>
-            <button
-                className={styles.welcomeBTN}
-                onClick={() => navigate("/movies")}
-            >
+            <StyledButton onClick={() => navigate("/movies")}>
                 Escoge tu película
-            </button>
+            </StyledButton>
         </div>
     );
 };
