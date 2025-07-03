@@ -1,0 +1,468 @@
+import AppRouter from "./routes/AppRouter";
+
+const App = () => {
+    return (
+        <>
+            <AppRouter />
+        </>
+    );
+};
+
+export default App;
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import "./styles/index.ts";
+import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
+
+createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+        <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+                <App />
+            </QueryClientProvider>
+        </BrowserRouter>
+    </StrictMode>
+);
+import "./global.css";
+import "./reset.css";
+import "./utilities.css";
+import "./variables.css";
+import { Outlet, NavLink } from "react-router-dom";
+import styles from "./Layout.module.css";
+
+const Layout = () => {
+    return (
+        <>
+            <nav className={styles.navbar}>
+                <ul className={styles.navList}>
+                    <li>
+                        <NavLink
+                            to="/"
+                            className={({ isActive }) =>
+                                isActive ? styles.active : ""
+                            }
+                        >
+                            Inicio
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            to="/movies"
+                            className={({ isActive }) =>
+                                isActive ? styles.active : ""
+                            }
+                        >
+                            Películas
+                        </NavLink>
+                    </li>
+                </ul>
+            </nav>
+
+            <main className={styles.mainContent}>
+                <Outlet />
+            </main>
+        </>
+    );
+};
+
+export default Layout;
+import { useNavigate } from "react-router-dom";
+import styles from "./MovieList.module.css";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { fetchPopularMovies } from "../../api/popularMovies";
+import { IMAGE_BASE_URL } from "../../constants";
+import { useEffect } from "react";
+
+type Movie = {
+    id: number;
+    title: string;
+    release_date: string;
+    backdrop_path: string;
+    vote_average: number;
+};
+
+type MoviesPage = {
+    page: number;
+    results: Movie[];
+    total_pages: number;
+    total_results: number;
+};
+
+const MovieList = () => {
+    const navigate = useNavigate();
+
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+        isLoading,
+        isError,
+        error,
+    } = useInfiniteQuery<MoviesPage, Error>({
+        queryKey: ["movies"],
+        queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
+            fetchPopularMovies(pageParam),
+
+        getNextPageParam: (lastPage) =>
+            lastPage.page < lastPage.total_pages
+                ? lastPage.page + 1
+                : undefined,
+    });
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (
+                window.innerHeight + window.scrollY >=
+                    document.body.offsetHeight &&
+                hasNextPage &&
+                !isFetchingNextPage
+            ) {
+                fetchNextPage();
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+    if (isLoading) return <p>Cargando...</p>;
+    if (isError)
+        return <p>Error al cargar pelis: {(error as Error).message}</p>;
+
+    const pages = data?.pages as MoviesPage[] | undefined;
+
+    return (
+        <section className={styles.section}>
+            <ul className={styles.container}>
+                {pages?.map((page) =>
+                    page.results.map((movie) => (
+                        <li
+                            key={movie.id}
+                            className={styles.card}
+                            onClick={() => navigate(`/movies/${movie.id}`)}
+                        >
+                            <div className={styles.text}>
+                                <h3>{movie.title}</h3>
+                                <p>{movie.release_date}</p>
+                            </div>
+                            <img
+                                src={`${IMAGE_BASE_URL}${movie.backdrop_path}`}
+                                alt={`Imagen de ${movie.title}`}
+                            />
+                        </li>
+                    ))
+                )}
+            </ul>
+        </section>
+    );
+};
+
+export default MovieList;
+/// <reference types="vite/client" />
+export const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+
+export const BASE_URL = "https://api.themoviedb.org/3";
+
+export const API_KEY = import.meta.env.VITE_TMDB_API_KEY as string;
+import { API_KEY, BASE_URL } from "../constants";
+
+export const fetchDetailsMovie = async (id: string) => {
+    const res = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}`);
+    if (!res.ok) throw new Error("Error fetching movie details");
+    const data = await res.json();
+    return data;
+};
+import { API_KEY, BASE_URL } from "../constants";
+
+type Movie = {
+    id: number;
+    title: string;
+    release_date: string;
+    backdrop_path: string;
+    vote_average: number;
+};
+
+type MoviesPage = {
+    page: number;
+    results: Movie[];
+    total_pages: number;
+    total_results: number;
+};
+
+export const fetchPopularMovies = async (page: number): Promise<MoviesPage> => {
+    const res = await fetch(
+        `${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
+    );
+    const data = await res.json();
+    return data;
+};
+import { Link } from "react-router-dom";
+import styles from "./NotFound.module.css";
+
+const NotFound = () => {
+    return (
+        <div className={styles.container}>
+            <h1 className={styles.title}>🤔 ¡Oops!</h1>
+            <p>Parece que te has perdido...</p>
+
+            <img
+                src="https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif"
+                alt="Gato programador"
+                className={styles.gif}
+            />
+
+            <Link to="/" className={styles.button}>
+                🏠 Volver al inicio
+            </Link>
+        </div>
+    );
+};
+
+export default NotFound;
+import MovieList from "../../components/MovieList/MovieList";
+
+const MoviePage = () => {
+    return (
+        <>
+            <MovieList />
+        </>
+    );
+};
+
+export default MoviePage;
+import styles from "./DetailsPage.module.css";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { IMAGE_BASE_URL } from "../../constants";
+import { fetchDetailsMovie } from "../../api/movieDetails";
+
+interface Genre {
+    id: number;
+    name: string;
+}
+
+interface ProductionCompany {
+    id: number;
+    name: string;
+    logo_path?: string | null;
+    origin_country?: string;
+}
+
+interface SpokenLanguage {
+    english_name: string;
+    iso_639_1: string;
+    name: string;
+}
+
+interface BelongsToCollection {
+    id: number;
+    name: string;
+    poster_path: string;
+    backdrop_path: string;
+}
+
+interface Movie {
+    adult: boolean;
+    backdrop_path: string;
+    belongs_to_collection: BelongsToCollection | null;
+    budget: number;
+    genres: Genre[];
+    homepage: string | null;
+    id: number;
+    imdb_id: string | null;
+    original_language: string;
+    original_title: string;
+    overview: string;
+    popularity: number;
+    poster_path: string | null;
+    production_companies: ProductionCompany[];
+    production_countries: { iso_3166_1: string; name: string }[];
+    release_date: string;
+    revenue: number;
+    runtime: number;
+    spoken_languages: SpokenLanguage[];
+    status: string;
+    tagline: string;
+    title: string;
+    video: boolean;
+    vote_average: number;
+    vote_count: number;
+}
+
+const DetailsPage = () => {
+    const { id } = useParams<{ id: string }>();
+
+    const {
+        data: movie,
+        isLoading,
+        isError,
+        error,
+    } = useQuery<Movie>({
+        queryKey: ["movie", id],
+        queryFn: () => fetchDetailsMovie(id!),
+    });
+
+    if (isLoading) {
+        return <p className={styles.container}>Cargando detalles...</p>;
+    }
+
+    if (isError) {
+        return (
+            <p className={styles.container}>
+                Error: {(error as Error).message}
+            </p>
+        );
+    }
+
+    if (!movie) {
+        return <p className={styles.container}>No se encontró la película.</p>;
+    }
+
+    return (
+        <div className={styles.container}>
+            <h1 className={styles.title}>
+                {movie.title} ({movie.release_date?.slice(0, 4)})
+            </h1>
+            <h2 className={styles.tagline}>{movie.tagline}</h2>
+            {movie.poster_path && (
+                <img
+                    className={styles.poster}
+                    src={IMAGE_BASE_URL + movie.poster_path}
+                    alt={movie.title}
+                />
+            )}
+
+            <p className={styles.overview}>{movie.overview}</p>
+
+            <div className={styles.genresContainer}>
+                {movie.genres?.map((genre) => (
+                    <span key={genre.id} className={styles.genreBubble}>
+                        {genre.name}
+                    </span>
+                ))}
+            </div>
+
+            <p className={styles.info}>
+                <strong>Duración:</strong> {movie.runtime} min
+            </p>
+
+            <p className={styles.info}>
+                <strong>Valoración:</strong> {movie.vote_average} ⭐ (
+                {movie.vote_count} votos)
+            </p>
+
+            <p className={styles.info}>
+                <strong>Estado:</strong> {movie.status}
+            </p>
+
+            <p className={styles.info}>
+                <strong>Presupuesto:</strong> ${movie.budget?.toLocaleString()}
+            </p>
+
+            <p className={styles.info}>
+                <strong>Recaudación:</strong> ${movie.revenue?.toLocaleString()}
+            </p>
+
+            <p className={styles.info}>
+                <strong>Idioma original:</strong>{" "}
+                {movie.original_language?.toUpperCase()}
+            </p>
+
+            <p className={styles.info}>
+                <strong>Idiomas hablados:</strong>{" "}
+                {movie.spoken_languages
+                    ?.map((lang) => lang.english_name)
+                    .join(", ")}
+            </p>
+
+            <p className={styles.info}>
+                <strong>Compañías productoras:</strong>{" "}
+                {movie.production_companies?.map((pc) => pc.name).join(", ")}
+            </p>
+
+            {movie.belongs_to_collection && (
+                <div className={styles.info}>
+                    <strong>Pertenece a la colección:</strong>{" "}
+                    {movie.belongs_to_collection.name}
+                    <br />
+                    <img
+                        src={
+                            IMAGE_BASE_URL +
+                            movie.belongs_to_collection.poster_path
+                        }
+                        alt={movie.belongs_to_collection.name}
+                        className={styles.collectionImage}
+                    />
+                </div>
+            )}
+
+            <div className={styles.links}>
+                {movie.homepage && (
+                    <a href={movie.homepage} target="_blank">
+                        Web oficial
+                    </a>
+                )}
+
+                {movie.imdb_id && (
+                    <a
+                        href={`https://www.imdb.com/title/${movie.imdb_id}/`}
+                        target="_blank"
+                    >
+                        Ver en IMDB
+                    </a>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default DetailsPage;
+import { useNavigate } from "react-router-dom";
+import styles from "./WelcomePage.module.css";
+
+const WelcomePage = () => {
+    const navigate = useNavigate();
+
+    return (
+        <div className={styles.container}>
+            <h1 className={styles.welcomeH1}>
+                Películas y series sin límites y mucho más
+            </h1>
+            <p className={styles.welcomeP}>¿Quieres ver algo ya? </p>
+            <button
+                className={styles.welcomeBTN}
+                onClick={() => navigate("/movies")}
+            >
+                Escoge tu película
+            </button>
+        </div>
+    );
+};
+
+export default WelcomePage;
+import { Routes, Route } from "react-router-dom";
+import MoviePage from "../pages/MoviesPage/MoviePage";
+import NotFound from "../pages/NotFound/NotFound";
+import DetailPage from "../pages/DetailsPage/DetailsPage";
+import WelcomePage from "../pages/WelcomePage/WelcomePage";
+import Layout from "../components/Layout/Layout";
+
+const AppRouter = () => {
+    return (
+        <Routes>
+            <Route path="/" element={<Layout />}>
+                <Route index element={<WelcomePage />} />
+                <Route path="movies" element={<MoviePage />} />
+                <Route path="movies/:id" element={<DetailPage />} />
+                <Route path="*" element={<NotFound />} />
+            </Route>
+        </Routes>
+    );
+};
+
+export default AppRouter;
