@@ -7,6 +7,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import auth from "../../firebase/firebaseConfig";
 import StyledButton from "../../components/Button/StyledButton";
+import styles from "./AuthForm.module.css";
 
 const AuthForm = ({ isLogin }: { isLogin: boolean }) => {
     const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ const AuthForm = ({ isLogin }: { isLogin: boolean }) => {
     };
 
     return (
-        <div>
+        <div className={styles.container}>
             <h1>{isLogin ? "Iniciar sesión" : "Registrarse"}</h1>
             <input
                 type="email"

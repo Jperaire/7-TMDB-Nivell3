@@ -5,22 +5,28 @@
 
 .navList {
     display: flex;
-    gap: 2rem;
 }
 
-.navList li a {
+.navList li a,
+.logoutBtn {
     color: white;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     text-decoration: none;
     font-weight: 600;
     text-transform: uppercase;
     transition: color 0.3s ease;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
 }
 
-.navList li a:hover {
+.rightMenu {
+    display: flex;
+    gap: 2rem;
+    margin-left: auto;
+}
+
+.navList li a:hover,
+.logoutBtn:hover {
     color: #ffd700;
-}
-
-.active {
-    border-bottom: 2px solid #ffd700;
 }

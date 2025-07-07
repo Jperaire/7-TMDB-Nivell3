@@ -1,6 +1,7 @@
+import styles from "./Navbar.module.css";
+
 import { useAuth } from "../../context/AuthContext";
 import auth from "../../firebase/firebaseConfig";
-import styles from "./Navbar.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
@@ -20,61 +21,35 @@ const Navbar = () => {
         <nav className={styles.navbar}>
             <ul className={styles.navList}>
                 <li>
-                    <NavLink
-                        to="/"
-                        className={({ isActive }) =>
-                            isActive ? styles.active : ""
-                        }
-                    >
-                        Inicio
-                    </NavLink>
+                    <NavLink to="/">Inicio</NavLink>
                 </li>
 
-                {user ? (
-                    <>
-                        <li>
-                            <NavLink
-                                to="/movies"
-                                className={({ isActive }) =>
-                                    isActive ? styles.active : ""
-                                }
-                            >
-                                Películas
-                            </NavLink>
-                        </li>
-                        <li>
-                            <button
-                                className={styles.logoutBtn}
-                                onClick={handleLogout}
-                            >
-                                Cerrar sesión
-                            </button>
-                        </li>
-                    </>
-                ) : (
-                    <>
-                        <li>
-                            <NavLink
-                                to="/login"
-                                className={({ isActive }) =>
-                                    isActive ? styles.active : ""
-                                }
-                            >
-                                Login
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink
-                                to="/register"
-                                className={({ isActive }) =>
-                                    isActive ? styles.active : ""
-                                }
-                            >
-                                Registro
-                            </NavLink>
-                        </li>
-                    </>
-                )}
+                <div className={styles.rightMenu}>
+                    {user ? (
+                        <>
+                            <li>
+                                <NavLink to="/movies">Películas</NavLink>
+                            </li>
+                            <li>
+                                <button
+                                    className={styles.logoutBtn}
+                                    onClick={handleLogout}
+                                >
+                                    Cerrar sesión
+                                </button>
+                            </li>
+                        </>
+                    ) : (
+                        <>
+                            <li>
+                                <NavLink to="/login">Login</NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/register">Registro</NavLink>
+                            </li>
+                        </>
+                    )}
+                </div>
             </ul>
         </nav>
     );

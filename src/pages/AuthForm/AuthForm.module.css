@@ -1,0 +1,33 @@
+.container {
+    border-radius: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: auto;
+    height: 520px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 45px;
+    box-shadow: 0 0 15px rgba(44, 62, 80, 0.7);
+    background-color: var(--primary-color);
+    padding: 0 2rem;
+    letter-spacing: 0.03em;
+    user-select: none;
+}
+
+.container h1 {
+    font-weight: 900;
+    max-width: 650px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #fff;
+    text-shadow: 1px 1px 3px rgba(44, 62, 80, 0.25);
+}
+
+.container input {
+    border-radius: 10px;
+    width: 60%;
+    padding: 10px 5px;
+}
