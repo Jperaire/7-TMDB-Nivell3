@@ -6,6 +6,7 @@ import WelcomePage from "../pages/WelcomePage/WelcomePage";
 import Layout from "../components/Layout/Layout";
 import AuthForm from "../pages/AuthForm/AuthForm";
 import PrivateRoute from "./PrivateRoute";
+import ActorDetailsPage from "../pages/ActorDetailsPage/ActorDetailsPage";
 
 const AppRouter = () => {
     return (
@@ -30,6 +31,15 @@ const AppRouter = () => {
                         </PrivateRoute>
                     }
                 />
+                <Route
+                    path="/actors/:id"
+                    element={
+                        <PrivateRoute>
+                            <ActorDetailsPage />
+                        </PrivateRoute>
+                    }
+                />
+
                 <Route path="*" element={<NotFound />} />
             </Route>
         </Routes>

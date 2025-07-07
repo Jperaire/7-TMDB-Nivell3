@@ -1,0 +1,47 @@
+.actorsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.actorCard {
+    background-color: var(--primary-color);
+    border-radius: 8px;
+    text-align: center;
+    padding: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.actorCard:hover {
+    transform: scale(1.03);
+}
+
+.actorImage {
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.noImage {
+    width: 100%;
+    height: 180px;
+    background-color: var(--primary-color);
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.actorInfo {
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+.actorInfo strong {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+    color: #f0f0f0;
+}

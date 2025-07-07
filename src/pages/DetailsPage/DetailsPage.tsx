@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { IMAGE_BASE_URL } from "../../constants";
 import { fetchDetailsMovie } from "../../api/movieDetails";
+import ActorsList from "../../components/AutorsList/ActorsList";
 
 interface Genre {
     id: number;
@@ -180,6 +181,7 @@ const DetailsPage = () => {
                     </a>
                 )}
             </div>
+            <ActorsList movieId={movie.id.toString()} />
         </div>
     );
 };
