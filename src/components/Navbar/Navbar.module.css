@@ -11,7 +11,6 @@
 .logoutBtn {
     color: white;
     font-size: 0.7rem;
-    text-decoration: none;
     font-weight: 600;
     text-transform: uppercase;
     transition: color 0.3s ease;

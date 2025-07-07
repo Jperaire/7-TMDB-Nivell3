@@ -39,6 +39,10 @@
     color: #fff;
 }
 
+.actorInfo p {
+    text-align: center;
+}
+
 .actorInfo strong {
     display: block;
     font-size: 1rem;
